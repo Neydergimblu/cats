@@ -1,4 +1,4 @@
-// console.log(cats);
+//console.log(cats);
 
 //Отрисовка рейтинга котиков
 const setRating = function (n) {
