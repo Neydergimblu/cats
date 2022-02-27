@@ -1,74 +1,169 @@
-//console.log(cats);
+if (!Cookies.get('user')) {
+	updateCatsButton.style.display = "none";
+	addCatButton.style.display = "none";
 
-//Отрисовка рейтинга котиков
-const setRating = function (n) {
-	let fill = "<img src='img/cat-fill.svg' alt='^_^'>"
-	let stroke = "<img src='img/cat-stroke.svg' alt='O_o'>"
-	let rate = "", cnt = 10;
-	for (let i = 0; i < cnt; i++) {
-		rate += i < n ? fill : stroke;
-	}
-	return rate;
-}
+	//Открытие модального окна с формой авторизации
+	enterUserButton.addEventListener("click", function (e) {
+		let authorizationForm = '';
+		authorizationForm = `
+		<div class="auth">
+		<buttons class="auth__close" onclick="closeModal()"><span class="material-icons-outlined">
+			close
+			</span></buttons>
+		<p class="auth__title">Авторизация</p>
+			<form class="auth__form">
+				<label for="login">Логин</label>
+				<input type="login" name="login" id="login">
+				<label for="password">Пароль</label>
+				<input type="password" name="password" id="password">
+				<button type="submit">Войти</button>
+			</form>
+		</div>
+		`;
+		modal.firstElementChild.innerHTML = authorizationForm;
+		modal.classList.add("active");
 
-//Отрисовка карточек с котиками
-const mainConteiner = document.querySelector('.main__container');
-// console.log(mainConteiner);
-let mainContent = '';
-cats.forEach((item) => {
-	mainContent += `
-	<div class="card" id="${item.id}">
-		<div class="card__img" style="background-image: url(${item.img_link})"></div>
-		<h3 class="card__title">${item.name}</h3>
-		<div class="card__rating">${setRating(item.rate)}</div>
-	</div>
+		//Обработка логина пользователя (пароль не добавлял, такой задачи не было)
+		const authForm = document.querySelector('.auth__form');
+		const inputLogin = document.querySelector('#login');
+
+		authForm.addEventListener("submit", function (e) {
+			e.preventDefault();
+			if (inputLogin.value.trim() !== "") {
+				document.cookie = `user=${inputLogin.value.toLowerCase()}; secure; samesite=lax`;
+				inputLogin.value = "";
+				window.location.assign('/');
+			} else {
+				alert('Введите имя пользователя');
+			}
+		})
+	});
+
+} else {
+
+	//Изменяем информационное сообщение
+	userInformation.innerHTML = `Здравствуйте, <b>${Cookies.get('user')}</b>!`;
+	//Изменяем надпись на кнопке
+	enterUserButton.innerHTML = `
+	Выйти <span class="material-icons-outlined">logout</span>
 	`;
-});
-// console.log(mainContent);
-mainConteiner.innerHTML += mainContent;
+	//Альтернативный обработчик на кнопку для деавторизации
+	enterUserButton.addEventListener("click", function (e) {
+		Cookies.remove('user');
+		window.location.assign('/');
+	});
 
-//Функция выбирающая слово после возраста котика
-const getWord = function (n, w1, w2, w0) {
-	if (n % 100 < 11 || n % 100 > 14) {
-		if (n % 10 === 1) {
-			return w1;
-		} else if (n % 10 >= 2 && n % 10 <= 4) {
-			return w2;
-		} else {
-			return w0;
-		}
-	} else {
-		return w0;
-	}
-}
+	//Добавление нового котика
+	addCatButton.addEventListener('click', function (e) {
+		let addNewCatForm = `
+		<div class="new-cat">
+			<buttons class="auth__close" onclick="closeModal()">
+				<span class="material-icons-outlined">
+					close
+				</span>
+			</buttons>
+			<p class="auth__title">Добавить нового котика</p>
+			<form class="form" id="newCatForm">
+				<label for="catId">Введите id</label>
+				<input type="text" name="catId" id="catId" value="19">
+				<label for="catName">Имя</label>
+				<input type="text" name="catName" id="catName" value="Буся">
+				<label for="catAge">Возраст</label>
+				<input type="text" name="catAge" id="catAge" value="5">
+				<label for="catRate">Рейтинг</label>
+				<input type="text" name="catRate" id="catRate" value="2">
+				<label for="catDescription">Описание</label>
+				<textarea type="text" name="catDescription" id="catDescription" rows="10">Буся очень хитрый кот - отчего же, кто поймёт?</textarea>
+				<div class="form__radio">
+					<label for="catFavourite">Включить в избранное</label>
+					<input name="catFavorite" type="radio" value="true"> Да
+					<input name="catFavorite" type="radio" value="false" checked> Нет
+				</div>
+				<label for="catImageUrl">Ссылка на изображение</label>
+				<input type="text" name="catImageUrl" id="catImageUrl" value="https://proprikol.ru/wp-content/uploads/2020/12/kartinki-ryzhih-kotov-5.jpg">
 
-//Устанавливаем обработчик клика на карточки
-const cards = document.querySelectorAll(".card");
-for (let i = 0; i < cards.length; i++) {
-	cards[i].addEventListener("click", function (e) {
-		showModal(cats[i]);
+				<button type="submit">Добавить</button>
+			</form>
+		</div>
+		`;
+
+		modal.firstElementChild.innerHTML = addNewCatForm;
+		modal.classList.add("active");
+
+
+		const formNewCat = document.querySelector('#newCatForm');
+		console.log(formNewCat);
+		//Отправка формы с данными о новом котике
+		formNewCat.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			//Получаем значения из формы
+			const catId = formNewCat.querySelector('#catId').value;
+			const catName = formNewCat.querySelector('#catName').value;
+			const catAge = formNewCat.querySelector('#catAge').value;
+			const catRate = formNewCat.querySelector('#catRate').value;
+			const catFavorite = formNewCat.querySelector('input[name = "catFavorite"]:checked').value;
+			const catDescription = formNewCat.querySelector('#catDescription').value;
+			const catImageUrl = formNewCat.querySelector('#catImageUrl').value;
+
+			//В идеале здесь надо было их проверить, но не в этот раз.
+
+			//Формируем обьект из значений
+			const cat = {
+				age: catAge,
+				description: catDescription,
+				favourite: catFavorite,
+				id: catId,
+				img_link: catImageUrl,
+				name: catName,
+				rate: catRate
+			}
+			console.log(cat);
+
+			//Отправляем данные о новом котике на сервер и добавляем в локальное хранилище
+			newCat(cat).then(result => {
+				console.log(result);
+				//Изменяем данные в хранилище
+				let localData = JSON.parse(localStorage.getItem('cats'));
+				localData.push(cat);
+				localStorage.setItem('cats', JSON.stringify(localData));
+				//Перезапрашиваем информацию из хранилища
+				writeCatList(JSON.parse(localStorage.getItem('cats')));
+				//Закрываем модальное окно
+				modal.classList.remove("active");
+			})
+
+		})
+	})
+
+	//Обновить локальное хранилище
+	updateCatsButton.addEventListener('click', function (e) {
+		getAllCats().then(result => {
+			localStorage.setItem('cats', JSON.stringify(result.data));
+			writeCatList(JSON.parse(localStorage.getItem('cats')));
+		});
 	})
 }
 
-//Показать модальное окно
-const modal = document.querySelector('.modal');
-const showModal = function (data) {
-	modal.classList.add("active");
-	modal.firstElementChild.innerHTML = `
-		<img class="modal__img" src="${data.img_link}" alt="${data.name}">
-		   <div class="modal__information">
-			   <h2>${data.name}</h2>
-			   <h3>${data.age} ${getWord(data.age, "год", "года", "лет")}</h3>
-			   <p>${data.description}</p>
-		   </div>
-		<div class="modal__close" onclick="closeInfo()"></div>
-	`;
+//Отрисовка карточек котиков из массива в localStorage (загрузка туда если нету)
+if (!localStorage.getItem('cats')) {
+	getAllCats().then(result => {
+		localStorage.setItem('cats', JSON.stringify(result.data));
+		writeCatList(JSON.parse(localStorage.getItem('cats')));
+	});
+} else {
+	writeCatList(JSON.parse(localStorage.getItem('cats')));
 }
 
-//Закрыть модальное окно
-const closeInfo = function () {
-	modal.classList.remove("active");
-}
+
+
+
+// getCat(15);
+// getCatsId();
+// deleteCat(15);
+
+
+
 
 
 
