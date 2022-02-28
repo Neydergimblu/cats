@@ -32,7 +32,7 @@ if (!Cookies.get('user')) {
 			if (inputLogin.value.trim() !== "") {
 				document.cookie = `user=${inputLogin.value.toLowerCase()}; secure; samesite=lax`;
 				inputLogin.value = "";
-				window.location.assign('/');
+				window.location.reload();
 			} else {
 				alert('Введите имя пользователя');
 			}
@@ -50,7 +50,7 @@ if (!Cookies.get('user')) {
 	//Альтернативный обработчик на кнопку для деавторизации
 	enterUserButton.addEventListener("click", function (e) {
 		Cookies.remove('user');
-		window.location.assign('/');
+		window.location.reload();
 	});
 
 	//Добавление нового котика
