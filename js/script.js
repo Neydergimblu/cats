@@ -65,22 +65,22 @@ if (!Cookies.get('user')) {
 			<p class="auth__title">Добавить нового котика</p>
 			<form class="form" id="newCatForm">
 				<label for="catId">Введите id</label>
-				<input type="text" name="catId" id="catId" value="19">
+				<input type="text" name="catId" id="catId" >
 				<label for="catName">Имя</label>
-				<input type="text" name="catName" id="catName" value="Буся">
+				<input type="text" name="catName" id="catName">
 				<label for="catAge">Возраст</label>
-				<input type="text" name="catAge" id="catAge" value="5">
+				<input type="text" name="catAge" id="catAge">
 				<label for="catRate">Рейтинг</label>
-				<input type="text" name="catRate" id="catRate" value="2">
+				<input type="text" name="catRate" id="catRate">
 				<label for="catDescription">Описание</label>
-				<textarea type="text" name="catDescription" id="catDescription" rows="10">Буся очень хитрый кот - отчего же, кто поймёт?</textarea>
+				<textarea type="text" name="catDescription" id="catDescription" rows="10"></textarea>
 				<div class="form__radio">
 					<label for="catFavourite">Включить в избранное</label>
 					<input name="catFavorite" type="radio" value="true"> Да
 					<input name="catFavorite" type="radio" value="false" checked> Нет
 				</div>
 				<label for="catImageUrl">Ссылка на изображение</label>
-				<input type="text" name="catImageUrl" id="catImageUrl" value="https://proprikol.ru/wp-content/uploads/2020/12/kartinki-ryzhih-kotov-5.jpg">
+				<input type="text" name="catImageUrl" id="catImageUrl">
 
 				<button type="submit">Добавить</button>
 			</form>
